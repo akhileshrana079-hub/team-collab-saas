@@ -196,7 +196,56 @@ exports.updateWorkspace = async (req, res) => {
   }
 };
 
-exports.deleteWorkspace = async(req,res)=>{
-    res.send('Delete Workspace');
-};
 
+exports.deleteWorkspace = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const workspace = await Workspace.findById(id);
+
+    if (!workspace) {
+      return res.status(404).json({
+        success: false,
+        message: "Workspace not found",
+      });
+    }
+
+    const membership = await WorkspaceMember.findOne({
+      workspace: id,
+      user: req.user._id,
+    });
+
+    if (!membership) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not a member of this workspace",
+      });
+    }
+
+    if (membership.role !== "OWNER") {
+      return res.status(403).json({
+        success: false,
+        message: "Only the workspace owner can delete the workspace",
+      });
+    }
+
+    await WorkspaceMember.deleteMany({
+      workspace: id,
+    });
+
+    await Workspace.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Workspace deleted successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
