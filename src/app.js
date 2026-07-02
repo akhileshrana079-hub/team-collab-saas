@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./routes/auth.routes');
+const workspaceRoutes = require('./routes/workspace.routes');
 
 const app = express();
 
@@ -23,5 +24,7 @@ app.get('/',(req,res)=>{
 });
 
 app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/workspaces',workspaceRoutes);
+
 
 module.exports= app;
