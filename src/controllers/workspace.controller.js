@@ -12,7 +12,6 @@ exports.createWorkspace = async (req, res) => {
 
     if (!name) {
       await session.abortTransaction();
-      session.endSession();
 
       return res.status(400).json({
         success: false,
@@ -20,7 +19,7 @@ exports.createWorkspace = async (req, res) => {
       });
     }
 
-    const workspace = await Workspace.create(
+    const [workspace] = await Workspace.create(
       [
         {
           name,
@@ -34,7 +33,7 @@ exports.createWorkspace = async (req, res) => {
     await WorkspaceMember.create(
       [
         {
-          workspace: workspace[0]._id,
+          workspace: workspace._id,
           user: req.user._id,
           role: "OWNER",
         },
@@ -43,16 +42,14 @@ exports.createWorkspace = async (req, res) => {
     );
 
     await session.commitTransaction();
-    session.endSession();
 
     return res.status(201).json({
       success: true,
       message: "Workspace created successfully",
-      workspace: workspace[0],
+      data: workspace,
     });
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
 
     console.error(error);
 
@@ -60,9 +57,10 @@ exports.createWorkspace = async (req, res) => {
       success: false,
       message: "Internal Server Error",
     });
+  } finally {
+    session.endSession();
   }
 };
-
 
 exports.getMyWorkspace = async (req, res) => {
   try {
@@ -83,7 +81,7 @@ exports.getMyWorkspace = async (req, res) => {
     return res.status(200).json({
       success: true,
       count: workspaces.length,
-      workspaces,
+      data: workspaces,
     });
   } catch (error) {
     console.error(error);
@@ -141,13 +139,9 @@ exports.getWorkspace = async (req, res) => {
   }
 };
 
-
 exports.updateWorkspace = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, description } = req.body;
-
-    const workspace = await Workspace.findById(id);
+    const workspace = await Workspace.findById(req.params.id);
 
     if (!workspace) {
       return res.status(404).json({
@@ -156,27 +150,13 @@ exports.updateWorkspace = async (req, res) => {
       });
     }
 
-    const membership = await WorkspaceMember.findOne({
-      workspace: id,
-      user: req.user._id,
-    });
-
-    if (!membership) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not a member of this workspace",
-      });
-    }
-
-    if (!["OWNER", "ADMIN"].includes(membership.role)) {
-      return res.status(403).json({
-        success: false,
-        message: "You don't have permission to update this workspace",
-      });
-    }
+    const { name, description } = req.body;
 
     if (name) workspace.name = name;
-    if (description !== undefined) workspace.description = description;
+
+    if (description !== undefined) {
+      workspace.description = description;
+    }
 
     await workspace.save();
 
@@ -185,7 +165,6 @@ exports.updateWorkspace = async (req, res) => {
       message: "Workspace updated successfully",
       data: workspace,
     });
-
   } catch (error) {
     console.error(error);
 
@@ -196,56 +175,53 @@ exports.updateWorkspace = async (req, res) => {
   }
 };
 
-
 exports.deleteWorkspace = async (req, res) => {
-  try {
-    const { id } = req.params;
+  const session = await mongoose.startSession();
 
-    const workspace = await Workspace.findById(id);
+  try {
+    session.startTransaction();
+
+    const workspace = await Workspace.findById(req.params.id).session(session);
 
     if (!workspace) {
+      await session.abortTransaction();
+
       return res.status(404).json({
         success: false,
         message: "Workspace not found",
       });
     }
 
-    const membership = await WorkspaceMember.findOne({
-      workspace: id,
-      user: req.user._id,
-    });
+    await WorkspaceMember.deleteMany(
+      {
+        workspace: workspace._id,
+      },
+      { session }
+    );
 
-    if (!membership) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not a member of this workspace",
-      });
-    }
+    await Workspace.deleteOne(
+      {
+        _id: workspace._id,
+      },
+      { session }
+    );
 
-    if (membership.role !== "OWNER") {
-      return res.status(403).json({
-        success: false,
-        message: "Only the workspace owner can delete the workspace",
-      });
-    }
-
-    await WorkspaceMember.deleteMany({
-      workspace: id,
-    });
-
-    await Workspace.findByIdAndDelete(id);
+    await session.commitTransaction();
 
     return res.status(200).json({
       success: true,
       message: "Workspace deleted successfully",
     });
-
   } catch (error) {
+    await session.abortTransaction();
+
     console.error(error);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
+  } finally {
+    session.endSession();
   }
 };
