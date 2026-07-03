@@ -7,6 +7,8 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth.routes');
 const workspaceRoutes = require('./routes/workspace.routes');
 const memberRoutes = require("./routes/member.routes");
+const projectRoutes = require('./routes/project.routes');
+const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
@@ -27,6 +29,7 @@ app.get('/',(req,res)=>{
 app.use('/api/v1/auth',authRoutes);
 app.use('/api/v1/workspaces',workspaceRoutes);
 app.use('/api/v1',memberRoutes);
-
+app.use('/api/v1',projectRoutes);
+app.use('/api/v1', taskRoutes);
 
 module.exports= app;
