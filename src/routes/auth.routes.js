@@ -53,6 +53,34 @@ const router = express.Router();
  *         description: Login successful
  */
 
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Get current logged in user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User fetched successfully
+ *       401:
+ *         description: Unauthorized
+ */
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout current user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ */
+
 router.post('/register',register)
 router.post('/login',login);
 router.get('/me',protect,me)
