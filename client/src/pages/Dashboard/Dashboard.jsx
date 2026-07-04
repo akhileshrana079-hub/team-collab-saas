@@ -1,40 +1,48 @@
-import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layouts/DashboardLayout";
 
 function Dashboard() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
   return (
-    <div className="min-h-screen bg-slate-100">
+    <DashboardLayout>
 
-      <div className="flex justify-between items-center p-6 bg-white shadow">
+      <h1 className="text-4xl font-bold mb-8">
+        Welcome 👋
+      </h1>
 
-        <h1 className="text-2xl font-bold">
-          Dashboard
-        </h1>
+      <div className="grid grid-cols-3 gap-6">
 
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg"
-        >
-          Logout
-        </button>
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-semibold">
+            Workspaces
+          </h2>
+
+          <p className="text-4xl mt-4">
+            0
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-semibold">
+            Projects
+          </h2>
+
+          <p className="text-4xl mt-4">
+            0
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-semibold">
+            Tasks
+          </h2>
+
+          <p className="text-4xl mt-4">
+            0
+          </p>
+        </div>
 
       </div>
 
-      <div className="p-8">
-
-        <h2 className="text-4xl font-bold">
-          Welcome 👋
-        </h2>
-
-      </div>
-
-    </div>
+    </DashboardLayout>
   );
 }
 
