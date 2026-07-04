@@ -11,23 +11,25 @@ import { Link, useNavigate } from "react-router-dom";
 function Sidebar() {
   const navigate = useNavigate();
 
-  const logout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
   return (
-    <aside className="w-64 bg-slate-900 text-white h-screen p-5">
+    <aside className="w-64 min-h-screen bg-slate-900 text-white flex flex-col">
 
-      <h1 className="text-2xl font-bold mb-10">
-        TeamLink
-      </h1>
+      <div className="p-6 border-b border-slate-700">
+        <h1 className="text-2xl font-bold">
+          Team Collaboration
+        </h1>
+      </div>
 
-      <nav className="space-y-4">
+      <nav className="flex-1 p-4 space-y-2">
 
         <Link
           to="/dashboard"
-          className="flex items-center gap-3 hover:text-blue-400"
+          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
         >
           <FaHome />
           Dashboard
@@ -35,7 +37,7 @@ function Sidebar() {
 
         <Link
           to="/workspaces"
-          className="flex items-center gap-3 hover:text-blue-400"
+          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
         >
           <FaUsers />
           Workspaces
@@ -43,7 +45,7 @@ function Sidebar() {
 
         <Link
           to="/projects"
-          className="flex items-center gap-3 hover:text-blue-400"
+          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
         >
           <FaFolder />
           Projects
@@ -51,7 +53,7 @@ function Sidebar() {
 
         <Link
           to="/tasks"
-          className="flex items-center gap-3 hover:text-blue-400"
+          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
         >
           <FaTasks />
           Tasks
@@ -59,13 +61,17 @@ function Sidebar() {
 
       </nav>
 
-      <button
-        onClick={logout}
-        className="mt-10 flex items-center gap-3 text-red-400"
-      >
-        <FaSignOutAlt />
-        Logout
-      </button>
+      <div className="p-4 border-t border-slate-700">
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-slate-800 text-red-400"
+        >
+          <FaSignOutAlt />
+          Logout
+        </button>
+
+      </div>
 
     </aside>
   );
