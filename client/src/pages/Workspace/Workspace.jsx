@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import toast from "react-hot-toast";
 
@@ -9,6 +10,8 @@ import {
 } from "../../services/workspace.service";
 
 function Workspace() {
+  const navigate = useNavigate();
+
   const [workspaces, setWorkspaces] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -17,11 +20,9 @@ function Workspace() {
     try {
       const response = await getWorkspaces();
 
-      console.log(response);
-
       setWorkspaces(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Failed to load workspaces");
     }
   };
@@ -48,7 +49,7 @@ function Workspace() {
 
       loadWorkspaces();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(
         error.response?.data?.message || "Failed to create workspace"
       );
@@ -63,7 +64,7 @@ function Workspace() {
 
       loadWorkspaces();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(
         error.response?.data?.message || "Delete failed"
       );
@@ -78,6 +79,7 @@ function Workspace() {
         </h1>
 
         <div className="flex gap-3">
+
           <input
             type="text"
             placeholder="Workspace Name"
@@ -100,6 +102,7 @@ function Workspace() {
           >
             Create
           </button>
+
         </div>
       </div>
 
@@ -109,31 +112,49 @@ function Workspace() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
           {workspaces.map((item) => (
+
             <div
               key={item.workspace._id}
-              className="bg-white rounded-xl shadow p-6"
+              className="bg-white rounded-xl shadow p-6 hover:shadow-xl transition cursor-pointer"
+              onClick={() =>
+                navigate(
+                  `/workspaces/${item.workspace._id}/projects`
+                )
+              }
             >
+
               <h2 className="text-2xl font-bold">
                 {item.workspace.name}
               </h2>
 
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-3">
                 {item.workspace.description || "No description"}
               </p>
 
-              <p className="text-blue-600 mt-2">
-                Role: {item.role}
-              </p>
+              <div className="flex justify-between items-center mt-5">
 
-              <button
-                onClick={() => handleDelete(item.workspace._id)}
-                className="mt-5 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-              >
-                Delete
-              </button>
+                <span className="text-blue-600 font-medium">
+                  {item.role}
+                </span>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(item.workspace._id);
+                  }}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Delete
+                </button>
+
+              </div>
+
             </div>
+
           ))}
+
         </div>
       )}
     </DashboardLayout>

@@ -14,17 +14,13 @@ import ProtectedRoute from "./ProtectedRoute";
 function AppRoutes() {
   return (
     <BrowserRouter>
-
       <Toaster position="top-right" />
 
       <Routes>
-
         {/* Public Routes */}
 
         <Route path="/" element={<Login />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}
@@ -48,7 +44,7 @@ function AppRoutes() {
         />
 
         <Route
-          path="/projects"
+          path="/workspaces/:workspaceId/projects"
           element={
             <ProtectedRoute>
               <Project />
@@ -57,16 +53,14 @@ function AppRoutes() {
         />
 
         <Route
-          path="/tasks"
+          path="/projects/:projectId/tasks"
           element={
             <ProtectedRoute>
               <Task />
             </ProtectedRoute>
           }
         />
-
       </Routes>
-
     </BrowserRouter>
   );
 }
