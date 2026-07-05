@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
+const dashboardRoutes = require("./routes/dashboard.routes");
 
 const authRoutes = require('./routes/auth.routes');
 const workspaceRoutes = require('./routes/workspace.routes');
@@ -33,6 +34,7 @@ app.use('/api/v1/workspaces',workspaceRoutes);
 app.use('/api/v1',memberRoutes);
 app.use('/api/v1',projectRoutes);
 app.use('/api/v1', taskRoutes);
+app.use("/api/v1", dashboardRoutes);
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
 
 

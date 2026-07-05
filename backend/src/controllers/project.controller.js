@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const checkWorkspacePermission = require('../utils/checkWorkspacePermission');
+const Task = require("../models/Task");
 
 exports.createProject = async (req, res) => {
   try {
