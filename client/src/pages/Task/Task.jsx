@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import toast from "react-hot-toast";
 
@@ -12,13 +12,11 @@ import {
 
 function Task() {
   const { projectId } = useParams();
-  const navigate = useNavigate();
 
   const [tasks, setTasks] = useState([]);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const [priority, setPriority] = useState("MEDIUM");
 
   const loadTasks = async () => {
@@ -59,7 +57,8 @@ function Task() {
       console.error(error);
 
       toast.error(
-        error.response?.data?.message || "Failed to create task"
+        error.response?.data?.message ||
+          "Failed to create task"
       );
     }
   };
@@ -74,9 +73,7 @@ function Task() {
     } catch (error) {
       console.error(error);
 
-      toast.error(
-        error.response?.data?.message || "Delete failed"
-      );
+      toast.error("Delete failed");
     }
   };
 
@@ -90,7 +87,7 @@ function Task() {
     } catch (error) {
       console.error(error);
 
-      toast.error("Failed to update status");
+      toast.error("Status update failed");
     }
   };
 
@@ -106,25 +103,29 @@ function Task() {
         <div className="flex gap-3">
 
           <input
-            type="text"
-            placeholder="Task Title"
             className="border rounded-lg p-3"
+            placeholder="Task Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) =>
+              setTitle(e.target.value)
+            }
           />
 
           <input
-            type="text"
-            placeholder="Description"
             className="border rounded-lg p-3"
+            placeholder="Description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) =>
+              setDescription(e.target.value)
+            }
           />
 
           <select
             className="border rounded-lg p-3"
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e) =>
+              setPriority(e.target.value)
+            }
           >
             <option value="LOW">LOW</option>
             <option value="MEDIUM">MEDIUM</option>
@@ -133,7 +134,7 @@ function Task() {
 
           <button
             onClick={handleCreate}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-lg"
+            className="bg-blue-600 text-white px-6 rounded-lg"
           >
             Create
           </button>
@@ -142,8 +143,14 @@ function Task() {
 
       </div>
             {tasks.length === 0 ? (
-        <div className="bg-white rounded-xl shadow p-8 text-center">
-          No tasks found
+        <div className="bg-white rounded-xl shadow p-10 text-center">
+          <h2 className="text-xl font-semibold">
+            No Tasks Found
+          </h2>
+
+          <p className="text-gray-500 mt-2">
+            Create your first task.
+          </p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,14 +159,14 @@ function Task() {
 
             <div
               key={task._id}
-              className="bg-white rounded-xl shadow p-6"
+              className="bg-white rounded-xl shadow p-6 hover:shadow-xl transition"
             >
 
               <h2 className="text-xl font-bold">
                 {task.title}
               </h2>
 
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-3">
                 {task.description || "No description"}
               </p>
 
@@ -179,19 +186,25 @@ function Task() {
                   {task.status}
                 </p>
 
+                <p>
+                  <span className="font-semibold">
+                    Assignee:
+                  </span>{" "}
+                  {task.assignee?.name || "Unassigned"}
+                </p>
+
               </div>
 
               <select
-                className="border rounded-lg p-2 mt-5 w-full"
+                className="w-full border rounded-lg p-2 mt-5"
                 value={task.status}
                 onChange={(e) =>
                   handleStatus(task._id, e.target.value)
                 }
               >
                 <option value="TODO">TODO</option>
-                <option value="IN_PROGRESS">
-                  IN PROGRESS
-                </option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="IN_REVIEW">IN REVIEW</option>
                 <option value="DONE">DONE</option>
               </select>
 
@@ -199,7 +212,7 @@ function Task() {
                 onClick={() => handleDelete(task._id)}
                 className="mt-5 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg"
               >
-                Delete
+                Delete Task
               </button>
 
             </div>

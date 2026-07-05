@@ -8,6 +8,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Workspace from "../pages/Workspace/Workspace";
 import Project from "../pages/Project/Project";
 import Task from "../pages/Task/Task";
+import Member from "../pages/Member/Member";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -17,6 +18,7 @@ function AppRoutes() {
       <Toaster position="top-right" />
 
       <Routes>
+
         {/* Public Routes */}
 
         <Route path="/" element={<Login />} />
@@ -60,6 +62,16 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/workspaces/:workspaceId/members"
+          element={
+            <ProtectedRoute>
+              <Member />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );
