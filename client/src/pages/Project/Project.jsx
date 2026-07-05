@@ -22,7 +22,6 @@ function Project() {
   const loadProjects = async () => {
     try {
       const response = await getProjects(workspaceId);
-
       setProjects(response.data);
     } catch (error) {
       console.error(error);
@@ -53,7 +52,6 @@ function Project() {
       loadProjects();
     } catch (error) {
       console.error(error);
-
       toast.error(
         error.response?.data?.message ||
           "Failed to create project"
@@ -70,11 +68,7 @@ function Project() {
       loadProjects();
     } catch (error) {
       console.error(error);
-
-      toast.error(
-        error.response?.data?.message ||
-          "Delete failed"
-      );
+      toast.error("Delete failed");
     }
   };
 
@@ -92,7 +86,6 @@ function Project() {
       loadProjects();
     } catch (error) {
       console.error(error);
-
       toast.error("Update failed");
     }
   };
@@ -136,8 +129,10 @@ function Project() {
         </div>
 
       </div>
-            {projects.length === 0 ? (
+
+      {projects.length === 0 ? (
         <div className="bg-white rounded-xl shadow p-10 text-center">
+
           <h2 className="text-xl font-semibold">
             No Projects Found
           </h2>
@@ -145,6 +140,7 @@ function Project() {
           <p className="text-gray-500 mt-2">
             Create your first project.
           </p>
+
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -164,7 +160,7 @@ function Project() {
                 {project.description || "No description"}
               </p>
 
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-4">
 
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -181,9 +177,16 @@ function Project() {
               <div className="mt-6 flex flex-wrap gap-2">
 
                 <button
-                  onClick={() =>
-                    navigate(`/projects/${project._id}/tasks`)
-                  }
+                  onClick={() => {
+                    localStorage.setItem(
+                      "projectId",
+                      project._id
+                    );
+
+                    navigate(
+                      `/projects/${project._id}/tasks`
+                    );
+                  }}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
                 >
                   Open Tasks

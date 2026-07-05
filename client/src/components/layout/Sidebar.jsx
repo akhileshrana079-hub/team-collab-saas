@@ -11,8 +11,13 @@ import { Link, useNavigate } from "react-router-dom";
 function Sidebar() {
   const navigate = useNavigate();
 
+  const workspaceId = localStorage.getItem("workspaceId");
+  const projectId = localStorage.getItem("projectId");
+
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("workspaceId");
+    localStorage.removeItem("projectId");
     navigate("/login");
   };
 
@@ -43,21 +48,25 @@ function Sidebar() {
           Workspaces
         </Link>
 
-        <Link
-          to="/projects"
-          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
-        >
-          <FaFolder />
-          Projects
-        </Link>
+        {workspaceId && (
+          <Link
+            to={`/workspaces/${workspaceId}/projects`}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
+          >
+            <FaFolder />
+            Projects
+          </Link>
+        )}
 
-        <Link
-          to="/tasks"
-          className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
-        >
-          <FaTasks />
-          Tasks
-        </Link>
+        {projectId && (
+          <Link
+            to={`/projects/${projectId}/tasks`}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800"
+          >
+            <FaTasks />
+            Tasks
+          </Link>
+        )}
 
       </nav>
 

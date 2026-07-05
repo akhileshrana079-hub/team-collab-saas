@@ -19,7 +19,6 @@ function Workspace() {
   const loadWorkspaces = async () => {
     try {
       const response = await getWorkspaces();
-
       setWorkspaces(response.data);
     } catch (error) {
       console.error(error);
@@ -51,7 +50,8 @@ function Workspace() {
     } catch (error) {
       console.error(error);
       toast.error(
-        error.response?.data?.message || "Failed to create workspace"
+        error.response?.data?.message ||
+          "Failed to create workspace"
       );
     }
   };
@@ -66,7 +66,8 @@ function Workspace() {
     } catch (error) {
       console.error(error);
       toast.error(
-        error.response?.data?.message || "Delete failed"
+        error.response?.data?.message ||
+          "Delete failed"
       );
     }
   };
@@ -74,6 +75,7 @@ function Workspace() {
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-8">
+
         <h1 className="text-3xl font-bold">
           Workspaces
         </h1>
@@ -104,6 +106,7 @@ function Workspace() {
           </button>
 
         </div>
+
       </div>
 
       {workspaces.length === 0 ? (
@@ -117,12 +120,7 @@ function Workspace() {
 
             <div
               key={item.workspace._id}
-              className="bg-white rounded-xl shadow p-6 hover:shadow-xl transition cursor-pointer"
-              onClick={() =>
-                navigate(
-                  `/workspaces/${item.workspace._id}/projects`
-                )
-              }
+              className="bg-white rounded-xl shadow p-6 hover:shadow-xl transition"
             >
 
               <h2 className="text-2xl font-bold">
@@ -133,17 +131,48 @@ function Workspace() {
                 {item.workspace.description || "No description"}
               </p>
 
-              <div className="flex justify-between items-center mt-5">
+              <p className="mt-4 text-blue-600 font-semibold">
+                {item.role}
+              </p>
 
-                <span className="text-blue-600 font-medium">
-                  {item.role}
-                </span>
+              <div className="mt-6 flex flex-wrap gap-2">
 
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(item.workspace._id);
+                  onClick={() => {
+                    localStorage.setItem(
+                      "workspaceId",
+                      item.workspace._id
+                    );
+
+                    navigate(
+                      `/workspaces/${item.workspace._id}/projects`
+                    );
                   }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                >
+                  Open Projects
+                </button>
+
+                <button
+                  onClick={() => {
+                    localStorage.setItem(
+                      "workspaceId",
+                      item.workspace._id
+                    );
+
+                    navigate(
+                      `/workspaces/${item.workspace._id}/members`
+                    );
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                >
+                  Members
+                </button>
+
+                <button
+                  onClick={() =>
+                    handleDelete(item.workspace._id)
+                  }
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                 >
                   Delete
